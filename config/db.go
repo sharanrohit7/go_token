@@ -24,11 +24,11 @@ func init() {
 
 	// Set default values if not provided
 	if mongoURI == "" {
-		mongoURI = "mongodb+srv://sharanrohit7:QN100nYHfX9CMdyt@masterchatmodule.d97i0ny.mongodb.net"
+		mongoURI = "YOUR_DATABASE_HERE"
 	}
 
 	if dbName == "" {
-		dbName = "Log" // Change this to your desired database name
+		dbName = "YOUR_DB_NAME" // Change this to your desired database name
 	}
 
 	// Create a context with a timeout
