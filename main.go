@@ -6,11 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/sharanrohit7/gotoken/handlers"
-	"github.com/sharanrohit7/gotoken/middleware"
 
 	// "github.com/sharanrohit7/gotoken/models"
 
@@ -27,9 +25,9 @@ func init() {
 func main() {
 	router := gin.Default()
 	// Configure CORS middleware
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"} // Add your domain here
-	router.Use(cors.New(config))
+	// config := cors.DefaultConfig()
+	// config.AllowOrigins = []string{"*"} // Add your domain here
+	// router.Use(cors.New(config))
 
 	// Configure logger middleware
 
@@ -38,7 +36,7 @@ func main() {
 	// log.Printf(" - Database: %s\n", os.Getenv("MONGODB_DB"))
 	// db.init()
 
-	router.Use(middleware.LoggingMiddleware())
+	// router.Use(middleware.LoggingMiddleware())
 
 	router.Use(func(c *gin.Context) {
 		// Log request
