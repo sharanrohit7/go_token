@@ -14,7 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/sharanrohit7/gotoken/handlers"
-	"github.com/sharanrohit7/gotoken/middleware"
 	"github.com/sharanrohit7/gotoken/utils"
 )
 
@@ -33,9 +32,9 @@ func main() {
 	router.Use(cors.New(config))
 
 	// Logger Middleware
-	router.Use(middleware.LoggingMiddleware())
+	// router.Use(middleware.LoggingMiddleware())
 
-	// Request Logging
+	// // Request Logging
 	router.Use(func(c *gin.Context) {
 		log.Printf("Received %s request for %s from %s", c.Request.Method, c.Request.URL, c.Request.RemoteAddr)
 		c.Next()
@@ -59,12 +58,6 @@ func main() {
 			return
 		}
 
-		// Check cache first
-		if token, found := GetCachedToken(id, roleID); found {
-			c.JSON(http.StatusOK, gin.H{"token": token})
-			return
-		}
-
 		// Generate new token
 		claims := map[string]interface{}{
 			"id":      id,
@@ -77,8 +70,6 @@ func main() {
 			return
 		}
 
-		// Cache token
-		CacheToken(id, roleID, token)
 		c.JSON(http.StatusOK, gin.H{"token": token})
 	})
 
@@ -107,6 +98,32 @@ func main() {
 		cacheTokenClaims(token, id, roleID, 15*time.Minute)
 		c.JSON(http.StatusOK, gin.H{"id": id, "role_id": roleID})
 	})
+
+	// router.POST("/extractData", func(c *gin.Context) {
+	// 	token := c.GetHeader("Authorization")
+	// 	if token == "" {
+	// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Token not provided"})
+	// 		return
+	// 	}
+
+	// 	// Check cache
+	// 	if cachedClaims, found := checkTokenCache(token); found {
+	// 		log.Println("Cache hit: returning cached token claims")
+	// 		c.JSON(http.StatusOK, gin.H{"id": cachedClaims.ID, "role_id": cachedClaims.RoleID})
+	// 		return
+	// 	}
+
+	// 	// Extract claims
+	// 	id, roleID, err := utils.ExtractClaims(token)
+	// 	if err != nil {
+	// 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token or failed to extract claims"})
+	// 		return
+	// 	}
+
+	// 	// Cache the claims
+	// 	cacheTokenClaims(token, id, roleID, 15*time.Minute)
+	// 	c.JSON(http.StatusOK, gin.H{"id": id, "role_id": roleID})
+	// })
 
 	router.GET("/hello", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "hello"})
